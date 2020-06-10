@@ -9,7 +9,7 @@ The supervisor is responsible for starting, stopping, and monitoring its child p
 The children of a supervisor are defined as a list of child specifications.
 1. When the supervisor is started, the child processes are started in order from left to right according to this list.
 2. When the supervisor terminates, it first terminates its child processes in reversed start order, from right to left.
-Apparently, it is a heap.
+Apparently, it is a heap(stack).
 
 
 # Start a supvisor
@@ -132,9 +132,9 @@ child_spec() = #{id => child_id(),       % mandatory = term(), Not a pid().
     shutdown    
         shutdown defines how a child process must be terminated when the supervisor want to terminate it.
         It is used to supply a way for some operation that is done in child process when the child need to be killed.
-        // brutal_kill
+        // brutal_kill, 强制停止 子进程
         brutal_kill means that the child process is unconditionally terminated using exit(Child,kill).
-        // timeout
+        // timeout, 通知子进程退出， 等待其 清理。 如果超时， 则无条件停止
         An integer time-out value means that the supervisor tells the child process to terminate by calling exit(Child,shutdown) and then wait for an exit signal with reason shutdown back from the child process. If no exit signal is received within the specified number of milliseconds, the child process is unconditionally terminated using exit(Child,kill).
         // default
         The shutdown key is optional. If it is not specified, it defaults to 5000 if the child is of type worker and it defaults to infinity if the child is of type supervisor.
@@ -143,7 +143,7 @@ child_spec() = #{id => child_id(),       % mandatory = term(), Not a pid().
 
 **Notice** that when the restart strategy is simple_one_for_one, the list of child specifications must be a list with one child specification only. (The child specification identifier is ignored.)
 No child process is then started during the initialization phase, but all children are assumed to be started dynamically using start_child/2.
-It is very suitable for the system in which a role process (child) is created  when a network connection has just created.
+It is very suitable for the system in which a user process (child) is created when a network connection has just created.
 
 # Children Management
 如果知道监控树根节点， 就能通过supervisor模块进行子节点的管理
