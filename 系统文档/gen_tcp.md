@@ -105,3 +105,17 @@ loop(S) ->
             ok
     end.
 ```
+
+关于tcp的同步与异步
+gen_tcp:accept 同步等待连接的到来，内部应该是 receive 挂起自己, gen_tcp:recv 同理
+
+异步的方式处理
+
+prim_inet:async_accept()
+    不是挂起自己, 而是管理器 申请一个ref 和自己绑定起来,
+    由管理器挂起等待, 当连接到来，管理器会给自己发 连接到来的消息, 即 sock
+    自己再通过 gen_tcp;controlling_process接管这个sock
+
+prim_inet:async_recv() 
+    同理， 有管理器挂起等待数据的到来， 当有数据来临的时候， 自己就像接收普通的消息一样处理该数据
+    每次处理完数据， 重新申请一个ref， 继续异步接收消息
