@@ -8,10 +8,14 @@ normal application / library application
 
 # 目录结构
 root
-    ebin beam文件 配置文件
-    src 源代码
-    priv 非erlang文件， 图像，驱动程序， 脚本等
-    include 头文件
+    ebin  
+        包含 beam文件 配置文件
+    src
+        源代码
+    priv
+        非erlang文件， 图像，驱动程序， 脚本等
+    include
+        头文件
 
 # 启动过程
 ```erlang
@@ -24,7 +28,7 @@ root
     加载application, 启动顶级监督者，
 
     加载所有打包在application中的模块， 启动application master进程
-    通过调用 回调模块里的  mode:start() 启动一个进程， 返回的进程pid作为 顶级监督者
+    通过调用 回调模块里的  mode:start() 启动一个进程, 返回的进程pid作为 顶级监督者
     由其负责启动子进程, 形成监督树
 ```
 
@@ -41,9 +45,10 @@ application的描述， 位于ebin文件夹， 和.beam文件在一起
     名称
     版本号
     包含的模块名称
-        在application加载时， 自动从 ebin中加载。 如果没有指明， 则在调用时加载
+        在application加载时, 自动从 ebin中加载。 如果没有指明, 则在调用时加载
     依赖的application
-        在启动当前application前， 其依赖的application必须启动. 可以手动启动， 也可以使用
+        在启动当前application前, 其依赖的application必须启动.
+        可以手动逐一启动， 也可以使用一下命令批量启动
         ```erlang
             application:ensure_all_started(Name)
         ```
@@ -55,17 +60,17 @@ application的描述， 位于ebin文件夹， 和.beam文件在一起
 每个application有独立的环境变量设置，可以根据配置而调整
 1. 资源文件配置
 2. 统一配置
-    ```erlang
-        erl -config Config
-        [
-            {Application1, []},
-            {Application2, []},
-            ...
-        ]
+```erlang
+    erl -config Config
+    [
+        {Application1, []},
+        {Application2, []},
+        ...
+    ]
 
-    ```
+```
 3.
-    erl -applicationName key value
+erl -applicationName key value
 
 获取环境变量
 ```erlang
@@ -79,11 +84,12 @@ application的描述， 位于ebin文件夹， 和.beam文件在一起
 ## 故障转移
 在集群中运行application， 某一个节点提供服务， 当该节点出现故障， 则由其他节点提供服务， 这叫故障转移
 不同节点有不同的优先级， 优先级高的节点出现故障， 由下一级的节点提供服务
+
 ## 接管
-当出现优先级高的节点， 则application迁移到该节点， 由该节点提供服务
+当出现优先级高的节点, 则application迁移到该节点, 由该节点提供服务
 
 # 分阶段启动
-在资源文件中配置 start_phase选项， 会在启动时调用 mod:start_phase(), 多个启动阶段会顺序地执行。
+在资源文件中配置 start_phase选项, 会在启动时调用 mod:start_phase(), 多个启动阶段会顺序地执行。
 
 # sasl
 报告类型
